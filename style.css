@@ -1,4 +1,6 @@
-* {
+
+
+ * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -963,3 +965,97 @@ body::after {
 .page-scroll::-webkit-scrollbar {
   display: none;
 }
+
+/* ============ LOGIN SCREEN ============ */
+.login-wrap {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 28px;
+  text-align: center;
+}
+
+.login-icon {
+  width: 88px;
+  height: 88px;
+  border-radius: 28px;
+  background: radial-gradient(circle at 30% 20%, rgba(40,190,255,0.35), rgba(8,18,28,0.9));
+  border: 1px solid rgba(60,200,255,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  margin-bottom: 24px;
+  box-shadow: 0 0 40px rgba(40,180,255,0.25);
+}
+
+.login-title {
+  font-size: 30px;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.login-sub {
+  color: #9fb3c8;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-bottom: 36px;
+  max-width: 300px;
+}
+
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+  background: #ffffff;
+  border: none;
+  border-radius: 30px;
+  padding: 16px 20px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #1f2937;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+}
+
+.login-error {
+  margin-top: 20px;
+  color: #ff8a8a;
+  font-size: 13px;
+  max-width: 300px;
+}
+
+.user-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(20, 50, 70, 0.6);
+  border: 1px solid rgba(60, 200, 255, 0.3);
+  border-radius: 30px;
+  padding: 6px 14px 6px 6px;
+  cursor: pointer;
+}
+
+.user-pill img {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+}
+
+.user-pill span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #cfe0ee;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+
