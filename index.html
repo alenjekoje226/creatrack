@@ -10,8 +10,80 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="stylesheet" href="style.css">
+
+<!-- Firebase SDK (modular v10, via CDN, no npm needed) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCLgJRov6osAf4dYZrstEaeyFxIX7GCrf0",
+    authDomain: "creatrack-36a43.firebaseapp.com",
+    projectId: "creatrack-36a43",
+    storageBucket: "creatrack-36a43.firebasestorage.app",
+    messagingSenderId: "449339428103",
+    appId: "1:449339428103:web:eec3769c2040734d02c9a2"
+  };
+
+  const firebaseApp = initializeApp(firebaseConfig);
+  const auth = getAuth(firebaseApp);
+  const provider = new GoogleAuthProvider();
+
+  // Expose what app.js needs on window, since app.js is a plain (non-module) script
+  window.__firebaseAuth = auth;
+
+  window.__signInWithGoogle = function () {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        window.dispatchEvent(new CustomEvent('creatrack-auth-signed-in', { detail: result.user }));
+      })
+      .catch((error) => {
+        console.error("Google sign-in failed:", error);
+        window.dispatchEvent(new CustomEvent('creatrack-auth-error', { detail: error.message }));
+      });
+  };
+
+  window.__signOutFirebase = function () {
+    signOut(auth).then(() => {
+      window.dispatchEvent(new CustomEvent('creatrack-auth-signed-out'));
+    });
+  };
+
+  // Fires on load and whenever auth state changes (covers page refresh / persisted session)
+  onAuthStateChanged(auth, (user) => {
+    window.dispatchEvent(new CustomEvent('creatrack-auth-state-changed', { detail: user }));
+  });
+</script>
+
 </head>
 <body>
+
+<!-- ============ LOGIN ============ -->
+<div id="login-screen" class="screen">
+  <div class="login-wrap">
+    <div class="login-icon">⚡</div>
+    <h1 class="login-title">CreaTrack</h1>
+    <p class="login-sub">Track your hydration, creatine, and body measurements.</p>
+
+    <button id="google-signin-btn" class="google-btn">
+      <svg width="20" height="20" viewBox="0 0 48 48">
+        <path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.6-6 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 8 3l6-6C34 6 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 20-9 20-20c0-1.3-.1-2.7-.4-3.5z"/>
+        <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16 18.9 13 24 13c3.1 0 5.8 1.1 8 3l6-6C34 6 29.3 4 24 4 16.3 4 9.6 8.3 6.3 14.7z"/>
+        <path fill="#4CAF50" d="M24 44c5.2 0 9.9-1.7 13.4-4.7l-6.2-5.2c-2 1.4-4.6 2.2-7.2 2.2-5.3 0-9.7-3.4-11.3-8l-6.6 5.1C9.5 39.6 16.2 44 24 44z"/>
+        <path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.2-4.1 5.6l6.2 5.2C40.9 35.9 44 30.5 44 24c0-1.3-.1-2.7-.4-3.5z"/>
+      </svg>
+      <span>Sign in with Google</span>
+    </button>
+
+    <div id="login-error" class="login-error hidden"></div>
+  </div>
+</div>
 
 <!-- ============ ONBOARDING ============ -->
 <div id="onboarding" class="screen">
