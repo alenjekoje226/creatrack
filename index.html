@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>CreaTrack</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a1420">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ ONBOARDING ============ -->
+<div id="onboarding" class="screen">
+
+  <!-- Step 1: Units -->
+  <div class="ob-step" id="ob-step-1">
+    <div class="ob-progress">
+      <div class="ob-bar active"></div>
+      <div class="ob-bar"></div>
+      <div class="ob-bar"></div>
+    </div>
+    <div class="ob-content">
+      <div class="ob-label">CREATRACK · STEP 1 / 3</div>
+      <h1>Pick your units</h1>
+      <p class="ob-sub">You can switch any time from settings.</p>
+
+      <div class="unit-card">
+        <button class="unit-option active" data-unit="metric" id="unit-metric">
+          <div class="unit-title">Metric</div>
+          <div class="unit-sub">kg · cm · ml</div>
+        </button>
+        <button class="unit-option" data-unit="imperial" id="unit-imperial">
+          <div class="unit-title">Imperial</div>
+          <div class="unit-sub">lbs · inch · oz</div>
+        </button>
+      </div>
+    </div>
+    <button class="btn-primary ob-continue" id="btn-step1-continue">Continue</button>
+  </div>
+
+  <!-- Step 2: Details -->
+  <div class="ob-step hidden" id="ob-step-2">
+    <div class="ob-progress">
+      <div class="ob-bar active"></div>
+      <div class="ob-bar active"></div>
+      <div class="ob-bar"></div>
+    </div>
+    <div class="ob-content">
+      <div class="ob-label">CREATRACK · STEP 2 / 3</div>
+      <h1>A few details</h1>
+      <p class="ob-sub">We use this to dial in your recommended creatine dose.</p>
+
+      <div class="detail-card">
+        <div class="detail-label">AGE GROUP</div>
+        <div class="age-group">
+          <button class="age-option" data-age="teen">13–19</button>
+          <button class="age-option active" data-age="adult">20–54</button>
+          <button class="age-option" data-age="senior">55+</button>
+        </div>
+      </div>
+
+      <div class="detail-card weight-card">
+        <div class="detail-label" id="weight-label">WEIGHT (KG)</div>
+        <input type="number" id="weight-input" class="weight-input" value="75" inputmode="decimal">
+      </div>
+    </div>
+    <div class="ob-footer-row">
+      <button class="btn-back" id="btn-step2-back">‹</button>
+      <button class="btn-primary ob-continue" id="btn-step2-continue">Continue</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Activity -->
+  <div class="ob-step hidden" id="ob-step-3">
+    <div class="ob-progress">
+      <div class="ob-bar active"></div>
+      <div class="ob-bar active"></div>
+      <div class="ob-bar active"></div>
+    </div>
+    <div class="ob-content">
+      <div class="ob-label">CREATRACK · STEP 3 / 3</div>
+      <h1>How hard do you train?</h1>
+      <p class="ob-sub">Activity affects your hydration and creatine targets.</p>
+
+      <div class="activity-list">
+        <button class="activity-option" data-activity="sedentary" data-mult="0">
+          <div class="activity-radio"></div>
+          <div>
+            <div class="activity-title">Sedentary</div>
+            <div class="activity-sub">Office work · 0 workouts/week</div>
+          </div>
+        </button>
+        <button class="activity-option" data-activity="light" data-mult="1">
+          <div class="activity-radio"></div>
+          <div>
+            <div class="activity-title">Light</div>
+            <div class="activity-sub">Walks · 1–2 workouts/week</div>
+          </div>
+        </button>
+        <button class="activity-option active" data-activity="moderate" data-mult="2">
+          <div class="activity-radio"><div class="activity-check">✓</div></div>
+          <div>
+            <div class="activity-title">Moderate</div>
+            <div class="activity-sub">Lifting · 3–4 workouts/week</div>
+          </div>
+        </button>
+        <button class="activity-option" data-activity="intense" data-mult="3">
+          <div class="activity-radio"></div>
+          <div>
+            <div class="activity-title">Intense</div>
+            <div class="activity-sub">Athlete · 5+ intense sessions/week</div>
+          </div>
+        </button>
+      </div>
+
+      <div class="targets-card">
+        <div class="targets-label">Your personalized targets</div>
+        <div class="targets-row">
+          <div class="target-item">
+            <div class="target-value"><span id="target-creatine">5.3</span><span class="target-unit">g</span></div>
+            <div class="target-name">Daily creatine</div>
+          </div>
+          <div class="target-divider"></div>
+          <div class="target-item">
+            <div class="target-value"><span id="target-water">3.3</span><span class="target-unit">L</span></div>
+            <div class="target-name">Daily water</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ob-footer-row">
+      <button class="btn-back" id="btn-step3-back">‹</button>
+      <button class="btn-primary ob-continue" id="btn-start-tracking">Start Tracking</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ MAIN APP ============ -->
+<div id="app" class="screen hidden">
+
+  <!-- HYDRATION TAB -->
+  <div class="tab-page" id="tab-hydration">
+    <div class="page-scroll">
+      <div class="header-row">
+        <div>
+          <div class="greeting">Good <span id="greet-time">day</span>, Athlete</div>
+          <div class="date-sub" id="date-today">Friday, June 26</div>
+        </div>
+        <div class="streak-pill">
+          <span class="streak-flame">🔥</span>
+          <span id="streak-count">0</span> Day Streak
+        </div>
+      </div>
+
+      <div class="ring-wrap">
+        <svg viewBox="0 0 240 240" class="ring-svg">
+          <circle cx="120" cy="120" r="100" class="ring-bg"/>
+          <circle cx="120" cy="120" r="100" class="ring-fg" id="hydration-ring" />
+        </svg>
+        <div class="ring-center">
+          <div class="ring-value"><span id="hydration-current">0.00</span><span class="ring-unit">L</span></div>
+          <div class="ring-sub"><span id="hydration-goal">3.3</span>L · <span id="hydration-pct">0%</span></div>
+        </div>
+      </div>
+
+      <button class="reset-btn" id="reset-hydration">↺ Reset today</button>
+
+      <div class="quick-add-row">
+        <button class="quick-add" data-ml="250">
+          <span class="qa-icon">☕</span>
+          <span>+250ml</span>
+        </button>
+        <button class="quick-add" data-ml="500">
+          <span class="qa-icon">🍶</span>
+          <span>+500ml</span>
+        </button>
+        <button class="quick-add" data-ml="750">
+          <span class="qa-icon">🍷</span>
+          <span>+750ml</span>
+        </button>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-label">REMAINING</div>
+          <div class="stat-value"><span id="hydration-remaining">3.30</span><span class="stat-unit">L</span></div>
+          <div class="stat-sub">to hit your goal</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">CREATINE TODAY</div>
+          <div class="stat-value"><span id="creatine-today-mini">0.0</span><span class="stat-unit">g</span></div>
+          <div class="stat-sub">of <span id="creatine-goal-mini">5.3</span>g goal</div>
+        </div>
+      </div>
+
+      <div class="tip-card">
+        <div class="tip-icon">💡</div>
+        <div>
+          <div class="tip-title">Tip</div>
+          <div class="tip-text">Sip steadily — every 25 min during training keeps your streak alive.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CREATINE TAB -->
+  <div class="tab-page hidden" id="tab-creatine">
+    <div class="page-scroll">
+      <h1 class="page-title">Creatine</h1>
+      <p class="page-sub">Daily dosing & lifetime totals</p>
+
+      <div class="seg-control">
+        <button class="seg-btn active" data-seg="log">Log</button>
+        <button class="seg-btn" data-seg="profile">Profile</button>
+      </div>
+
+      <div id="creatine-log-view">
+        <div class="stat-row">
+          <div class="stat-card glow">
+            <div class="stat-label">RECOMMENDED</div>
+            <div class="stat-value"><span id="creatine-recommended">5.3</span><span class="stat-unit">g</span></div>
+            <div class="stat-sub">per day</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">TODAY</div>
+            <div class="stat-value"><span id="creatine-today">0.0</span><span class="stat-unit">g</span></div>
+            <div class="stat-sub">logged today</div>
+          </div>
+        </div>
+
+        <div class="lifetime-card">
+          <div class="lifetime-icon">🏆</div>
+          <div>
+            <div class="lifetime-label">TOTAL LOGGED · LIFETIME</div>
+            <div class="lifetime-value"><span id="creatine-lifetime">0.0</span><span class="stat-unit">g</span></div>
+          </div>
+        </div>
+
+        <div class="dose-card">
+          <div class="dose-label">LOG TODAY'S DOSE</div>
+          <div class="dose-amount" id="dose-amount">5.0</div>
+          <div class="dose-chips">
+            <button class="dose-chip" data-g="3">+3g</button>
+            <button class="dose-chip" data-g="5">+5g</button>
+            <button class="dose-chip" data-g="7">+7g</button>
+            <button class="dose-chip" data-g="10">+10g</button>
+          </div>
+          <button class="btn-primary" id="add-dose-btn">Add Dose</button>
+        </div>
+      </div>
+
+      <div id="creatine-profile-view" class="hidden">
+        <div class="detail-card">
+          <div class="detail-label">AGE GROUP</div>
+          <div class="age-group">
+            <button class="age-option" data-age="teen">13–19</button>
+            <button class="age-option active" data-age="adult">20–54</button>
+            <button class="age-option" data-age="senior">55+</button>
+          </div>
+        </div>
+        <div class="detail-card weight-card">
+          <div class="detail-label" id="weight-label-2">WEIGHT (KG)</div>
+          <input type="number" id="weight-input-2" class="weight-input" value="75" inputmode="decimal">
+        </div>
+        <div class="detail-card">
+          <div class="detail-label">ACTIVITY LEVEL</div>
+          <div class="activity-list compact">
+            <button class="activity-option" data-activity="sedentary" data-mult="0">
+              <div class="activity-radio"></div>
+              <div><div class="activity-title">Sedentary</div></div>
+            </button>
+            <button class="activity-option" data-activity="light" data-mult="1">
+              <div class="activity-radio"></div>
+              <div><div class="activity-title">Light</div></div>
+            </button>
+            <button class="activity-option active" data-activity="moderate" data-mult="2">
+              <div class="activity-radio"><div class="activity-check">✓</div></div>
+              <div><div class="activity-title">Moderate</div></div>
+            </button>
+            <button class="activity-option" data-activity="intense" data-mult="3">
+              <div class="activity-radio"></div>
+              <div><div class="activity-title">Intense</div></div>
+            </button>
+          </div>
+        </div>
+        <button class="btn-primary" id="save-profile-btn">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY TAB -->
+  <div class="tab-page hidden" id="tab-history">
+    <div class="page-scroll">
+      <h1 class="page-title">History</h1>
+      <p class="page-sub">Your streak in motion</p>
+
+      <div class="stat-row">
+        <div class="stat-card glow">
+          <div class="stat-label">GOALS MET</div>
+          <div class="stat-value"><span id="goals-met-count">0</span></div>
+          <div class="stat-sub">days this month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">LOGGED</div>
+          <div class="stat-value"><span id="total-entries-count">0</span></div>
+          <div class="stat-sub">total entries</div>
+        </div>
+      </div>
+
+      <div class="calendar-card">
+        <div class="cal-header">
+          <button class="cal-nav" id="cal-prev">‹</button>
+          <div class="cal-month" id="cal-month-label">June 2026</div>
+          <button class="cal-nav" id="cal-next">›</button>
+        </div>
+        <div class="cal-weekdays">
+          <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+        <div class="cal-legend">
+          <div class="legend-item"><span class="legend-dot goal-met"></span>Goal met</div>
+          <div class="legend-item"><span class="legend-dot today"></span>Today</div>
+          <div class="legend-item"><span class="legend-dot no-log"></span>No log</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BODY TAB -->
+  <div class="tab-page hidden" id="tab-body">
+    <div class="page-scroll">
+      <h1 class="page-title">Body</h1>
+      <p class="page-sub">Track your zones over time</p>
+
+      <div id="body-measurements"></div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="nav-item active" data-tab="hydration">
+      <span class="nav-icon">💧</span>
+      <span>Hydration</span>
+    </button>
+    <button class="nav-item" data-tab="creatine">
+      <span class="nav-icon">⚡</span>
+      <span>Creatine</span>
+    </button>
+    <button class="nav-item" data-tab="history">
+      <span class="nav-icon">📅</span>
+      <span>History</span>
+    </button>
+    <button class="nav-item" data-tab="body">
+      <span class="nav-icon">🧍</span>
+      <span>Body</span>
+    </button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
